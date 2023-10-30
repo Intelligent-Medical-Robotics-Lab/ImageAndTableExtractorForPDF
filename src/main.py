@@ -3,7 +3,8 @@ from PIL import Image
 
 
 def main(args):
-    filename = args.filepath
+    print(os.getcwd())
+    filename = os.path.join(os.getcwd(), args.inputpath, args.filename)
     print(filename)
     # open file
     with fitz.Document(filename) as my_pdf_file:
@@ -22,27 +23,31 @@ def main(args):
             else:
                 print(f"There are No image/s on page number {page_number}[!]")
 
-            # # 遍历当前页面所有图片
-            # for image_number, image in enumerate(page.get_images(), start=1):
-            #     # 访问图片xref
-            #     xref_value = image[0]
+            # 遍历当前页面所有图片
+            for image_number, image in enumerate(page.get_images(), start=1):
+                # 访问图片xref
+                xref_value = image[0]
 
-            #     # 提取图片信息
-            #     base_image = my_pdf_file.extract_image(xref_value)
+                # 提取图片信息
+                base_image = my_pdf_file.extract_image(xref_value)
 
-            #     # 访问图片
-            #     image_bytes = base_image["image"]
+                # 访问图片
+                image_bytes = base_image["image"]
 
-            #     # 获取图片扩展名
-            #     ext = base_image["ext"]
+                # 获取图片扩展名
+                ext = base_image["ext"]
 
-            #     # 加载图片
-            #     image = Image.open(io.BytesIO(image_bytes))
+                # 加载图片
+                image = Image.open(io.BytesIO(image_bytes))
 
-            #     # 保存图片
-            #     image_name = f"Page{page_number}Image{image_number}.{ext}"
-            #     im_path = os.path.join(image_path, image_name)
-            #     image.save(open(im_path, "wb"))
+                # 保存图片
+                image_name = f"Page{page_number}Image{image_number}.{ext}"
+                output_dir = os.path.join(args.outputdir, args.filename[:-4])
+                if not os.path.exists(output_dir):
+                    os.mkdir(output_dir)
+
+                im_path = os.path.join(args.outputdir, args.filename[:-4], image_name)
+                image.save(open(im_path, "wb"))
     
 
 if __name__ == "__main__":
@@ -50,8 +55,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Extract images from pdf')
 
-    parser.add_argument('--filepath', default='..\\data\\input\\test.pdf', help='input pdf path')
-    parser.add_argument('--output-dir', default='..\\data\\output', help='output dir')
+    parser.add_argument('--inputpath', default='data/input/', help='input dir')
+    parser.add_argument('--filename', default='test2.pdf', help='filename')
+    parser.add_argument('--outputdir', default='data/output', help='output dir')
 
     args = parser.parse_args()
     main(args)
