@@ -1,62 +1,41 @@
-import fitz, os, io
-from PIL import Image
+import pdfplumber
+import pandas as pd
+import os
+from PyPDF2 import PdfReader
 
 
 def main(args):
-    print(os.getcwd())
-    filename = os.path.join(os.getcwd(), args.inputpath, args.filename)
-    print(filename)
-    # open file
-    with fitz.Document(filename) as my_pdf_file:
-        # 遍历所有页面
-        for page_number in range(1, len(my_pdf_file) + 1):
+    output_table_dir = os.path.join(os.getcwd(), args.outputdir, os.path.splitext(args.filename)[0], 'image')
+    output_image_dir = os.path.join(os.getcwd(), args.outputdir, os.path.splitext(args.filename)[0], 'table')
+    if not os.path.exists(output_table_dir):
+        os.makedirs(output_table_dir)
+    if not os.path.exists(output_image_dir):
+        os.makedirs(output_image_dir)
 
-            # 查看独立页面
-            page = my_pdf_file[page_number - 1]
-
-            # 查看当前页所有图片
-            images = page.get_images()
-
-            # 查看是否有图片
-            if images:
-                print(f"There are {len(images)} image/s on page number {page_number}[+]")
-            else:
-                print(f"There are No image/s on page number {page_number}[!]")
-
-            # 遍历当前页面所有图片
-            for image_number, image in enumerate(page.get_images(), start=1):
-                # 访问图片xref
-                xref_value = image[0]
-
-                # 提取图片信息
-                base_image = my_pdf_file.extract_image(xref_value)
-
-                # 访问图片
-                image_bytes = base_image["image"]
-
-                # 获取图片扩展名
-                ext = base_image["ext"]
-
-                # 加载图片
-                image = Image.open(io.BytesIO(image_bytes))
-
-                # 保存图片
-                image_name = f"Page{page_number}Image{image_number}.{ext}"
-                output_dir = os.path.join(args.outputdir, args.filename[:-4])
-                if not os.path.exists(output_dir):
-                    os.mkdir(output_dir)
-
-                im_path = os.path.join(args.outputdir, args.filename[:-4], image_name)
-                image.save(open(im_path, "wb"))
+    pdf =  pdfplumber.open(args.inputpath + args.filename)
+    # 表格提取
+    for page_idx, page in enumerate(pdf.pages):
+        tables = page.extract_tables()
+        if tables is not None:
+            for table_idx, table in enumerate(tables):
+                table_path = args.outputdir + '/' + os.path.splitext(args.filename)[0] + '/' + 'table' + '/page{}_{}.csv'.format(page_idx + 1, table_idx + 1)
+                pd.DataFrame(table[1:],columns=table[0]).to_csv(table_path)
     
+    # 图片提取
+    reader = PdfReader(args.inputpath + args.filename)
+    for page_idx, page in enumerate(reader.pages):
+        for image in page.images:
+            image_path = args.outputdir + '/' + os.path.splitext(args.filename)[0] + '/' + 'image' + '/page{}_{}'.format(page_idx + 1, image.name)
+            with open(image_path, "wb") as fp:
+                fp.write(image.data)
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(
-        description='Extract images from pdf')
+        description='Extract images and tables from pdf')
 
     parser.add_argument('--inputpath', default='data/input/', help='input dir')
-    parser.add_argument('--filename', default='test2.pdf', help='filename')
+    parser.add_argument('--filename', default='test1.pdf', help='filename')
     parser.add_argument('--outputdir', default='data/output', help='output dir')
 
     args = parser.parse_args()

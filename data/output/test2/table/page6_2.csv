@@ -1,0 +1,45 @@
+,Labels,Unit,Description
+0,PacketCounter,N/A,"Packet counter, value will be same if
+data frames were recorded at the same
+time (increase 1 unit per data frame)"
+1,SampleTimeFine,N/A,Not recorded in this study
+2,Acc_X,m/s2,"Acceleration in the vertical direction
+(w/gravity)"
+3,Acc_Y,m/s2,"Acceleration in the medio-lateral
+direction (w/gravity)"
+4,Acc_Z,m/s2,"Acceleration in the anterior-posterior
+direction (w/gravity)"
+5,FreeAcc_X,m/s2,"Acceleration in the vertical direction
+(w/o gravity)"
+6,FreeAcc_Y,m/s2,"Acceleration in the medio-lateral
+direction (w/o gravity)"
+7,FreeAcc_Z,m/s2,"Acceleration in the anterior-posterior
+direction (w/o gravity)"
+8,Gyr_X,rad/s,"Rate of turn along the vertical
+direction"
+9,Gyr_Y,rad/s,"Rate of turn along the medio-lateral
+direction"
+10,Gyr_Z,rad/s,"Rate of turn along the anterior-
+posterior direction"
+11,Mag_X,a.u.,"3D magnetic field in the vertical
+direction"
+12,Mag_Y,a.u.,"3D magnetic field in the medio-lateral
+direction"
+13,Mag_Z,a.u.,"3D magnetic field in the anterior-
+posterior direction"
+14,VelInc_X,m/s,"Delta_velocity (dv) in the vertical
+direction"
+15,VelInc_Y,m/s,"Delta_velocity (dv) in the medio-
+lateral direction"
+16,VelInc_Z,m/s,"Delta_velocity (dv) in the anterior-
+posterior direction"
+17,OriInc_q0,N/A,Delta_quaternion (q0)
+18,OriInc_q1,N/A,Delta_quaternion (q1)
+19,OriInc_q2,N/A,Delta_quaternion (q2)
+20,OriInc_q3,N/A,Delta_quaternion (q3)
+21,Roll,deg,"Euler angles in XYZ Earth fixed type
+(roll)"
+22,Pitch,deg,"Euler angles in XYZ Earth fixed type
+(pitch)"
+23,Yaw,deg,"Euler angles in XYZ Earth fixed type
+(yaw)"
