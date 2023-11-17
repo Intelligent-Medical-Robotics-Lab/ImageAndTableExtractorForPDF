@@ -31,8 +31,7 @@ def main(args):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(
-        description='Extract images and tables from pdf')
+    parser = argparse.ArgumentParser(description='Extract images and tables from pdf')
 
     parser.add_argument('--inputpath', default='data/input/', help='input dir')
     parser.add_argument('--filename', default='test1.pdf', help='filename')
